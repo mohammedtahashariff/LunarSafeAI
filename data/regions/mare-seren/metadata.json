@@ -1,0 +1,45 @@
+{
+  "region_id": "mare-seren",
+  "region_name": "Mare Serenitatis",
+  "terrain_type": "mare",
+  "center_lat": 28.0,
+  "center_lon": 17.5,
+  "tmc_resolution_m": 5.0,
+  "ohrc_resolution_m": 0.25,
+  "target_resolution_m": 1.0,
+  "tmc_size_px": [
+    100,
+    100
+  ],
+  "ohrc_size_px": [
+    2000,
+    2000
+  ],
+  "dem_size_px": [
+    500,
+    500
+  ],
+  "area_m": 500,
+  "elevation_range_m": [
+    16.96878433227539,
+    26.526573181152344
+  ],
+  "craters": [
+    {
+      "x": 415,
+      "y": 39,
+      "radius_m": 41,
+      "depth_m": 4.0
+    }
+  ],
+  "boulders": [
+    {
+      "x": 325,
+      "y": 78,
+      "radius_m": 4,
+      "height_m": 2.5
+    }
+  ],
+  "shadow_pct": 0.5,
+  "seed": 774705138
+}

@@ -1,0 +1,159 @@
+{
+  "region_id": "aristarchus",
+  "region_name": "Aristarchus Crater",
+  "terrain_type": "crater_complex",
+  "center_lat": 23.73,
+  "center_lon": -47.49,
+  "tmc_resolution_m": 5.0,
+  "ohrc_resolution_m": 0.25,
+  "target_resolution_m": 1.0,
+  "tmc_size_px": [
+    100,
+    100
+  ],
+  "ohrc_size_px": [
+    2000,
+    2000
+  ],
+  "dem_size_px": [
+    500,
+    500
+  ],
+  "area_m": 500,
+  "elevation_range_m": [
+    1.9161195755004883,
+    35.0
+  ],
+  "craters": [
+    {
+      "x": 366,
+      "y": 263,
+      "radius_m": 29,
+      "depth_m": 5.0
+    },
+    {
+      "x": 404,
+      "y": 223,
+      "radius_m": 27,
+      "depth_m": 2.4
+    },
+    {
+      "x": 108,
+      "y": 252,
+      "radius_m": 46,
+      "depth_m": 9.4
+    },
+    {
+      "x": 431,
+      "y": 374,
+      "radius_m": 41,
+      "depth_m": 6.2
+    },
+    {
+      "x": 145,
+      "y": 311,
+      "radius_m": 24,
+      "depth_m": 2.5
+    },
+    {
+      "x": 257,
+      "y": 271,
+      "radius_m": 18,
+      "depth_m": 2.4
+    },
+    {
+      "x": 198,
+      "y": 354,
+      "radius_m": 48,
+      "depth_m": 6.2
+    },
+    {
+      "x": 360,
+      "y": 122,
+      "radius_m": 12,
+      "depth_m": 2.2
+    },
+    {
+      "x": 90,
+      "y": 356,
+      "radius_m": 28,
+      "depth_m": 3.5
+    },
+    {
+      "x": 204,
+      "y": 375,
+      "radius_m": 38,
+      "depth_m": 9.0
+    },
+    {
+      "x": 153,
+      "y": 258,
+      "radius_m": 35,
+      "depth_m": 5.8
+    }
+  ],
+  "boulders": [
+    {
+      "x": 398,
+      "y": 319,
+      "radius_m": 3,
+      "height_m": 0.9
+    },
+    {
+      "x": 200,
+      "y": 85,
+      "radius_m": 5,
+      "height_m": 0.9
+    },
+    {
+      "x": 142,
+      "y": 401,
+      "radius_m": 4,
+      "height_m": 2.8
+    },
+    {
+      "x": 472,
+      "y": 207,
+      "radius_m": 4,
+      "height_m": 2.7
+    },
+    {
+      "x": 23,
+      "y": 350,
+      "radius_m": 3,
+      "height_m": 2.0
+    },
+    {
+      "x": 64,
+      "y": 251,
+      "radius_m": 5,
+      "height_m": 2.3
+    },
+    {
+      "x": 366,
+      "y": 187,
+      "radius_m": 2,
+      "height_m": 2.9
+    },
+    {
+      "x": 290,
+      "y": 45,
+      "radius_m": 4,
+      "height_m": 2.3
+    },
+    {
+      "x": 167,
+      "y": 83,
+      "radius_m": 3,
+      "height_m": 1.8
+    },
+    {
+      "x": 452,
+      "y": 38,
+      "radius_m": 4,
+      "height_m": 2.2
+    }
+  ],
+  "shadow_pct": 15.0,
+  "seed": 874340488
+}

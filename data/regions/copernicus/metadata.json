@@ -1,0 +1,141 @@
+{
+  "region_id": "copernicus",
+  "region_name": "Copernicus Crater",
+  "terrain_type": "central_peak_crater",
+  "center_lat": 9.62,
+  "center_lon": -20.08,
+  "tmc_resolution_m": 5.0,
+  "ohrc_resolution_m": 0.25,
+  "target_resolution_m": 1.0,
+  "tmc_size_px": [
+    100,
+    100
+  ],
+  "ohrc_size_px": [
+    2000,
+    2000
+  ],
+  "dem_size_px": [
+    500,
+    500
+  ],
+  "area_m": 500,
+  "elevation_range_m": [
+    6.516372203826904,
+    35.0
+  ],
+  "craters": [
+    {
+      "x": 318,
+      "y": 66,
+      "radius_m": 20,
+      "depth_m": 3.0
+    },
+    {
+      "x": 280,
+      "y": 417,
+      "radius_m": 27,
+      "depth_m": 5.2
+    },
+    {
+      "x": 106,
+      "y": 42,
+      "radius_m": 8,
+      "depth_m": 1.7
+    },
+    {
+      "x": 384,
+      "y": 397,
+      "radius_m": 25,
+      "depth_m": 3.5
+    },
+    {
+      "x": 124,
+      "y": 156,
+      "radius_m": 43,
+      "depth_m": 8.5
+    },
+    {
+      "x": 142,
+      "y": 420,
+      "radius_m": 45,
+      "depth_m": 6.7
+    },
+    {
+      "x": 301,
+      "y": 321,
+      "radius_m": 16,
+      "depth_m": 1.2
+    },
+    {
+      "x": 85,
+      "y": 259,
+      "radius_m": 39,
+      "depth_m": 7.7
+    },
+    {
+      "x": 437,
+      "y": 65,
+      "radius_m": 10,
+      "depth_m": 1.3
+    },
+    {
+      "x": 196,
+      "y": 174,
+      "radius_m": 46,
+      "depth_m": 4.3
+    }
+  ],
+  "boulders": [
+    {
+      "x": 255,
+      "y": 227,
+      "radius_m": 3,
+      "height_m": 1.9
+    },
+    {
+      "x": 457,
+      "y": 197,
+      "radius_m": 4,
+      "height_m": 1.9
+    },
+    {
+      "x": 474,
+      "y": 421,
+      "radius_m": 2,
+      "height_m": 2.6
+    },
+    {
+      "x": 363,
+      "y": 279,
+      "radius_m": 3,
+      "height_m": 1.6
+    },
+    {
+      "x": 128,
+      "y": 262,
+      "radius_m": 4,
+      "height_m": 1.4
+    },
+    {
+      "x": 220,
+      "y": 145,
+      "radius_m": 2,
+      "height_m": 1.4
+    },
+    {
+      "x": 139,
+      "y": 298,
+      "radius_m": 5,
+      "height_m": 1.5
+    },
+    {
+      "x": 482,
+      "y": 350,
+      "radius_m": 3,
+      "height_m": 2.9
+    }
+  ],
+  "shadow_pct": 12.0,
+  "seed": 1954574147
+}

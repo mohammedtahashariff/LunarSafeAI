@@ -1,0 +1,40 @@
+{
+  "run_id": "RUN-LUNAR-20260828-D1791E",
+  "sr_model": "lunarsr",
+  "sr_metrics": {
+    "psnr": 24.5,
+    "ssim": 0.81
+  },
+  "hazard_stats": {
+    "detected_craters": 189,
+    "detected_boulders": 2877,
+    "shadow_percentage": 2.118,
+    "false_safe_rate": 0.0,
+    "mean_hazard_score": 0.9956393837928772
+  },
+  "candidates": [],
+  "best_candidate": null,
+  "why_selected": [
+    {
+      "text": "No valid site found in study region. All zones violate hard constraints.",
+      "status": "FAIL"
+    }
+  ],
+  "why_rejected": [],
+  "navigation_astar": {
+    "status": "NO_SAFE_ROUTE",
+    "path": [],
+    "metrics": {}
+  },
+  "navigation_dijkstra": {
+    "status": "NO_SAFE_ROUTE",
+    "path": [],
+    "metrics": {}
+  },
+  "files": {
+    "hazard_map_png": "/api/results/RUN-LUNAR-20260828-D1791E/hazard_map.png",
+    "landing_geojson": "/api/results/RUN-LUNAR-20260828-D1791E/landing_zones.geojson",
+    "route_geojson": null,
+    "report_html": "/api/results/RUN-LUNAR-20260828-D1791E/report.html"
+  }
+}

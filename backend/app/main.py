@@ -10,6 +10,8 @@ from backend.app.api.schemas import AppSettings, RunFullAnalysisPayload, ReplanP
 from backend.app.services.jobs import BackgroundJobExecutor
 from backend.app.processing.navigation import plan_route
 from backend.app.processing.hazards import generate_boulder_hazard_map, fuse_hazards
+from backend.app.processing.lunar_regions import get_region_list, get_region_by_id, load_region_data, get_region_data_paths
+from backend.app.processing.tmc_ohrc_intersection import generate_region_coverage
 
 app = FastAPI(
     title="LunarSafe AI Backend",
@@ -51,10 +53,12 @@ def startup_event():
 # Ensure processed export folders exist at import time for static mounts
 os.makedirs("data/processed", exist_ok=True)
 os.makedirs("data/demo", exist_ok=True)
+os.makedirs("data/regions", exist_ok=True)
 
 # Mount static directories
 app.mount("/api/results", StaticFiles(directory="data/processed"), name="results")
 app.mount("/api/demo_data", StaticFiles(directory="data/demo"), name="demo")
+app.mount("/api/region_data", StaticFiles(directory="data/regions"), name="regions")
 
 @app.get("/api/health")
 def health_check():
@@ -115,6 +119,89 @@ def get_models():
             }
         ]
     }
+
+# ────────────────────────────────────────────────────────────────────
+# REGION APIs — Interactive Moon Surface Explorer
+# ────────────────────────────────────────────────────────────────────
+
+@app.get("/api/regions")
+def list_regions():
+    """Returns all selectable lunar regions for the moon surface explorer."""
+    return get_region_list()
+
+@app.get("/api/regions/{region_id}")
+def get_region_detail(region_id: str):
+    """Returns detailed region data including TMC/OHRC coverage metadata."""
+    region = get_region_by_id(region_id)
+    if not region:
+        raise HTTPException(status_code=404, detail=f"Region '{region_id}' not found")
+
+    # Generate TMC/OHRC coverage info
+    coverage = generate_region_coverage(region)
+
+    # Check if pre-generated data exists
+    paths = get_region_data_paths(region_id)
+    has_data = os.path.exists(paths["tmc_path"])
+
+    return {
+        "region": region,
+        "coverage": coverage,
+        "has_data": has_data,
+        "tiles": {
+            "tmc_url": f"/api/region_data/{region_id}/tmc_tile.png" if has_data else None,
+            "dem_url": f"/api/region_data/{region_id}/dem_tile.png" if has_data else None,
+            "ohrc_url": f"/api/region_data/{region_id}/ohrc_tile.png" if has_data else None
+        }
+    }
+
+@app.post("/api/regions/{region_id}/analyze")
+def analyze_region(region_id: str):
+    """
+    Runs the full Nexora analysis pipeline on a selected lunar region.
+    Uses the pre-generated TMC/OHRC data for that region.
+    """
+    region = get_region_by_id(region_id)
+    if not region:
+        raise HTTPException(status_code=404, detail=f"Region '{region_id}' not found")
+
+    paths = get_region_data_paths(region_id)
+    if not os.path.exists(paths["tmc_path"]):
+        raise HTTPException(status_code=400, detail=f"No pre-generated data for region '{region_id}'. Run generate_regions.py first.")
+
+    # Create job with region context
+    job_payload = {
+        "mode": "region",
+        "region_id": region_id,
+        "sr_model": "lunarsr",
+        "config": GLOBAL_SETTINGS,
+        "start_point": [50, 450]
+    }
+
+    job_id = BackgroundJobExecutor.create_job(job_payload)
+    BackgroundJobExecutor.run(job_id)
+
+    return BackgroundJobExecutor.get_job(job_id)
+
+@app.get("/api/regions/{region_id}/heatmap")
+def get_region_heatmap(region_id: str):
+    """Returns the latest hazard heatmap PNG for a region, if analysis has been run."""
+    # Find the latest completed run for this region
+    jobs = BackgroundJobExecutor.list_jobs()
+    region_jobs = [
+        j for j in jobs
+        if j["payload"].get("region_id") == region_id and j["status"] == "COMPLETED"
+    ]
+    region_jobs.sort(key=lambda x: x.get("end_time", 0), reverse=True)
+
+    if not region_jobs:
+        raise HTTPException(status_code=404, detail="No completed analysis found for this region")
+
+    job = region_jobs[0]
+    heatmap_path = f"data/processed/{job['job_id']}/hazard_map.png"
+    if not os.path.exists(heatmap_path):
+        raise HTTPException(status_code=404, detail="Heatmap file not found")
+
+    return FileResponse(heatmap_path, media_type="image/png")
 
 @app.post("/api/run-full-analysis", response_model=JobResponse)
 def run_full_analysis(payload: RunFullAnalysisPayload):

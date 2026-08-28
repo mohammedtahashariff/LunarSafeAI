@@ -1,0 +1,51 @@
+{
+  "region_id": "mare-imbrium",
+  "region_name": "Mare Imbrium",
+  "terrain_type": "mare_basalt",
+  "center_lat": 36.0,
+  "center_lon": -16.0,
+  "tmc_resolution_m": 5.0,
+  "ohrc_resolution_m": 0.25,
+  "target_resolution_m": 1.0,
+  "tmc_size_px": [
+    100,
+    100
+  ],
+  "ohrc_size_px": [
+    2000,
+    2000
+  ],
+  "dem_size_px": [
+    500,
+    500
+  ],
+  "area_m": 500,
+  "elevation_range_m": [
+    15.868570327758789,
+    26.675155639648438
+  ],
+  "craters": [
+    {
+      "x": 222,
+      "y": 114,
+      "radius_m": 26,
+      "depth_m": 5.1
+    },
+    {
+      "x": 131,
+      "y": 353,
+      "radius_m": 28,
+      "depth_m": 3.0
+    }
+  ],
+  "boulders": [
+    {
+      "x": 126,
+      "y": 383,
+      "radius_m": 3,
+      "height_m": 1.7
+    }
+  ],
+  "shadow_pct": 1.0,
+  "seed": 1480948326
+}

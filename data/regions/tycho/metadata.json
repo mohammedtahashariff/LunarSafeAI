@@ -1,0 +1,177 @@
+{
+  "region_id": "tycho",
+  "region_name": "Tycho Crater",
+  "terrain_type": "young_impact",
+  "center_lat": -43.31,
+  "center_lon": -11.36,
+  "tmc_resolution_m": 5.0,
+  "ohrc_resolution_m": 0.25,
+  "target_resolution_m": 1.0,
+  "tmc_size_px": [
+    100,
+    100
+  ],
+  "ohrc_size_px": [
+    2000,
+    2000
+  ],
+  "dem_size_px": [
+    500,
+    500
+  ],
+  "area_m": 500,
+  "elevation_range_m": [
+    2.345473289489746,
+    35.0
+  ],
+  "craters": [
+    {
+      "x": 72,
+      "y": 303,
+      "radius_m": 8,
+      "depth_m": 2.1
+    },
+    {
+      "x": 457,
+      "y": 367,
+      "radius_m": 15,
+      "depth_m": 2.8
+    },
+    {
+      "x": 191,
+      "y": 86,
+      "radius_m": 29,
+      "depth_m": 6.7
+    },
+    {
+      "x": 225,
+      "y": 243,
+      "radius_m": 34,
+      "depth_m": 3.0
+    },
+    {
+      "x": 117,
+      "y": 223,
+      "radius_m": 18,
+      "depth_m": 4.4
+    },
+    {
+      "x": 453,
+      "y": 286,
+      "radius_m": 24,
+      "depth_m": 2.4
+    },
+    {
+      "x": 281,
+      "y": 235,
+      "radius_m": 21,
+      "depth_m": 1.5
+    },
+    {
+      "x": 83,
+      "y": 437,
+      "radius_m": 42,
+      "depth_m": 6.3
+    },
+    {
+      "x": 200,
+      "y": 325,
+      "radius_m": 40,
+      "depth_m": 10.2
+    },
+    {
+      "x": 466,
+      "y": 151,
+      "radius_m": 9,
+      "depth_m": 2.3
+    },
+    {
+      "x": 379,
+      "y": 85,
+      "radius_m": 43,
+      "depth_m": 11.1
+    },
+    {
+      "x": 118,
+      "y": 203,
+      "radius_m": 39,
+      "depth_m": 6.3
+    }
+  ],
+  "boulders": [
+    {
+      "x": 120,
+      "y": 435,
+      "radius_m": 5,
+      "height_m": 1.9
+    },
+    {
+      "x": 90,
+      "y": 350,
+      "radius_m": 5,
+      "height_m": 0.9
+    },
+    {
+      "x": 165,
+      "y": 287,
+      "radius_m": 3,
+      "height_m": 0.9
+    },
+    {
+      "x": 252,
+      "y": 262,
+      "radius_m": 4,
+      "height_m": 1.1
+    },
+    {
+      "x": 218,
+      "y": 103,
+      "radius_m": 5,
+      "height_m": 2.0
+    },
+    {
+      "x": 166,
+      "y": 75,
+      "radius_m": 3,
+      "height_m": 2.9
+    },
+    {
+      "x": 452,
+      "y": 279,
+      "radius_m": 2,
+      "height_m": 2.0
+    },
+    {
+      "x": 113,
+      "y": 414,
+      "radius_m": 4,
+      "height_m": 2.0
+    },
+    {
+      "x": 455,
+      "y": 401,
+      "radius_m": 4,
+      "height_m": 2.3
+    },
+    {
+      "x": 87,
+      "y": 112,
+      "radius_m": 5,
+      "height_m": 1.5
+    },
+    {
+      "x": 260,
+      "y": 281,
+      "radius_m": 2,
+      "height_m": 1.4
+    },
+    {
+      "x": 377,
+      "y": 276,
+      "radius_m": 5,
+      "height_m": 0.9
+    }
+  ],
+  "shadow_pct": 18.0,
+  "seed": 1708970971
+}

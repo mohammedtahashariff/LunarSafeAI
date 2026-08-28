@@ -1,0 +1,135 @@
+{
+  "region_id": "malapert",
+  "region_name": "Malapert Mountain",
+  "terrain_type": "polar_peak",
+  "center_lat": -86.0,
+  "center_lon": 0.0,
+  "tmc_resolution_m": 5.0,
+  "ohrc_resolution_m": 0.25,
+  "target_resolution_m": 1.0,
+  "tmc_size_px": [
+    100,
+    100
+  ],
+  "ohrc_size_px": [
+    2000,
+    2000
+  ],
+  "dem_size_px": [
+    500,
+    500
+  ],
+  "area_m": 500,
+  "elevation_range_m": [
+    5.049808502197266,
+    30.446725845336914
+  ],
+  "craters": [
+    {
+      "x": 419,
+      "y": 463,
+      "radius_m": 30,
+      "depth_m": 2.3
+    },
+    {
+      "x": 362,
+      "y": 173,
+      "radius_m": 31,
+      "depth_m": 4.9
+    },
+    {
+      "x": 122,
+      "y": 99,
+      "radius_m": 37,
+      "depth_m": 7.8
+    },
+    {
+      "x": 189,
+      "y": 194,
+      "radius_m": 46,
+      "depth_m": 12.0
+    },
+    {
+      "x": 244,
+      "y": 343,
+      "radius_m": 12,
+      "depth_m": 2.3
+    },
+    {
+      "x": 403,
+      "y": 349,
+      "radius_m": 14,
+      "depth_m": 2.5
+    },
+    {
+      "x": 306,
+      "y": 119,
+      "radius_m": 44,
+      "depth_m": 3.5
+    }
+  ],
+  "boulders": [
+    {
+      "x": 116,
+      "y": 429,
+      "radius_m": 5,
+      "height_m": 1.9
+    },
+    {
+      "x": 37,
+      "y": 101,
+      "radius_m": 5,
+      "height_m": 1.9
+    },
+    {
+      "x": 242,
+      "y": 178,
+      "radius_m": 2,
+      "height_m": 2.1
+    },
+    {
+      "x": 41,
+      "y": 474,
+      "radius_m": 2,
+      "height_m": 1.1
+    },
+    {
+      "x": 425,
+      "y": 276,
+      "radius_m": 2,
+      "height_m": 2.4
+    },
+    {
+      "x": 245,
+      "y": 32,
+      "radius_m": 4,
+      "height_m": 1.9
+    },
+    {
+      "x": 255,
+      "y": 136,
+      "radius_m": 5,
+      "height_m": 1.7
+    },
+    {
+      "x": 169,
+      "y": 241,
+      "radius_m": 3,
+      "height_m": 1.4
+    },
+    {
+      "x": 181,
+      "y": 147,
+      "radius_m": 3,
+      "height_m": 2.9
+    },
+    {
+      "x": 158,
+      "y": 220,
+      "radius_m": 2,
+      "height_m": 1.8
+    }
+  ],
+  "shadow_pct": 25.0,
+  "seed": 1606798863
+}

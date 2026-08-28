@@ -1,0 +1,100 @@
+{
+  "run_id": "RUN-LUNAR-20260828-D2FD45",
+  "mode": "region",
+  "region_id": "shiv-shakti",
+  "region_name": "Shiv Shakti Point",
+  "sr_model": "lunarsr",
+  "sr_metrics": {
+    "psnr": 24.5,
+    "ssim": 0.81
+  },
+  "hazard_stats": {
+    "detected_craters": 189,
+    "detected_boulders": 2877,
+    "shadow_percentage": 2.118,
+    "false_safe_rate": 0.0,
+    "mean_hazard_score": 0.9956393837928772
+  },
+  "candidates": [
+    {
+      "decision": "CONDITIONAL",
+      "score": 3.7,
+      "mean_slope": 3.2,
+      "max_slope": 5.8,
+      "mean_hazard": 0.963,
+      "max_hazard": 1.155,
+      "mean_roughness": 0.05,
+      "mean_uncertainty": 0.1,
+      "mean_confidence": 0.95,
+      "shadow_percent": 0.0,
+      "x": 299,
+      "y": 215,
+      "id": "SITE-A"
+    }
+  ],
+  "best_candidate": {
+    "decision": "CONDITIONAL",
+    "score": 3.7,
+    "mean_slope": 3.2,
+    "max_slope": 5.8,
+    "mean_hazard": 0.963,
+    "max_hazard": 1.155,
+    "mean_roughness": 0.05,
+    "mean_uncertainty": 0.1,
+    "mean_confidence": 0.95,
+    "shadow_percent": 0.0,
+    "x": 299,
+    "y": 215,
+    "id": "SITE-A"
+  },
+  "why_selected": [
+    {
+      "text": "Mean slope (3.2\u00b0) and Max slope (5.8\u00b0) are within limits (< 10.0\u00b0)",
+      "status": "PASS"
+    },
+    {
+      "text": "Terrain roughness (0.05) is smooth",
+      "status": "PASS"
+    },
+    {
+      "text": "Shadow coverage is 0.0% (full illumination)",
+      "status": "PASS"
+    },
+    {
+      "text": "Safe buffer clearance around detected craters maintained",
+      "status": "PASS"
+    },
+    {
+      "text": "Safe buffer clearance around detected boulder candidates maintained",
+      "status": "PASS"
+    },
+    {
+      "text": "Low landing uncertainty (0.10)",
+      "status": "PASS"
+    },
+    {
+      "text": "High landing suitability score: 3.7/100",
+      "status": "PASS"
+    }
+  ],
+  "why_rejected": [],
+  "navigation_astar": {
+    "status": "START_IN_HAZARD",
+    "path": [],
+    "metrics": {}
+  },
+  "navigation_dijkstra": {
+    "status": "START_IN_HAZARD",
+    "path": [],
+    "metrics": {}
+  },
+  "files": {
+    "tmc_png": "/api/region_data/shiv-shakti/tmc_tile.png",
+    "ohrc_png": "/api/region_data/shiv-shakti/ohrc_tile.png",
+    "dem_png": "/api/region_data/shiv-shakti/dem_tile.png",
+    "hazard_map_png": "/api/results/RUN-LUNAR-20260828-D2FD45/hazard_map.png",
+    "landing_geojson": "/api/results/RUN-LUNAR-20260828-D2FD45/landing_zones.geojson",
+    "route_geojson": null,
+    "report_html": "/api/results/RUN-LUNAR-20260828-D2FD45/report.html"
+  }
+}

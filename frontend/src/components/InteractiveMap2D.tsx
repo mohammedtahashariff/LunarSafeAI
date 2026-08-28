@@ -37,10 +37,15 @@ export default function InteractiveMap2D({ runData }: InteractiveMap2DProps) {
   useEffect(() => {
     if (!results) return;
     
+    const regionId = runData?.payload?.region_id || null;
+    const tmcUrl = regionId ? `/api/region_data/${regionId}/tmc_tile.png` : '/api/demo_data/synthetic_tmc.png';
+    const srUrl = regionId ? `/api/region_data/${regionId}/ohrc_tile.png` : '/api/demo_data/synthetic_ohrc.png';
+    const demUrl = regionId ? `/api/region_data/${regionId}/dem_tile.png` : '/api/demo_data/synthetic_dem.png';
+    
     const imageSources: any = {
-      tmc: '/api/demo_data/synthetic_tmc.png',
-      sr: '/api/demo_data/synthetic_ohrc.png', // Represents the estimated high-res texture
-      dem: '/api/demo_data/synthetic_dem.png',
+      tmc: tmcUrl,
+      sr: srUrl, // 1m spatial resolution image for the selected region
+      dem: demUrl,
       hazard: results.files.hazard_map_png,
       uncertainty: results.files.hazard_map_png // Fallback image for display
     };

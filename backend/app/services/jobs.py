@@ -18,6 +18,11 @@ from backend.app.processing.navigation import plan_route
 from backend.app.processing.export import (
     export_hazard_map_png, export_landing_zones_geojson, export_navigation_geojson, generate_scientific_html_report
 )
+from backend.app.processing.lunar_regions import load_region_data, get_region_by_id
+from backend.app.processing.tmc_ohrc_intersection import generate_region_coverage
+from backend.app.processing.lr_hr_pairs import generate_lr_hr_pair, compute_pair_metrics
+from backend.app.processing.patch_generator import construct_training_patches
+from backend.app.processing.dataset_splitter import split_dataset, get_split_summary
 
 # In-memory database of background jobs
 JOBS_DB = {}
@@ -129,6 +134,58 @@ class BackgroundJobExecutor:
                     "origin_x": 0.0,
                     "origin_y": 0.0
                 }
+
+            elif mode == "region":
+                # ─── REGION MODE: Load pre-generated TMC/OHRC data ───
+                region_id = payload.get("region_id", "")
+                region_data = load_region_data(region_id)
+                if not region_data:
+                    raise FileNotFoundError(f"Region data not found for '{region_id}'. Run generate_regions.py first.")
+
+                tmc_img = region_data["tmc_img"]
+                dem_16 = region_data["dem_img"]
+                dem_scaled = region_data["dem_scaled"]
+                ohrc_img = region_data["ohrc_img"]
+                dem_meta = region_data["metadata"]
+                has_dem = True
+
+                tmc_meta = region_data["tmc_meta"]
+                ohrc_meta = region_data["ohrc_meta"]
+
+                # ─── TMC/OHRC Intersection Detection ───
+                BackgroundJobExecutor._update_status(job_id, "INTERSECTION", 12.0, 
+                    f"Detecting TMC-2/OHRC scene intersections for {region_data['region']['name']}...")
+                region_def = get_region_by_id(region_id)
+                coverage_info = generate_region_coverage(region_def)
+                time.sleep(0.3)
+
+                # ─── LR/HR Pair Generation ───
+                BackgroundJobExecutor._update_status(job_id, "LR_HR_PAIRS", 15.0,
+                    "Generating LR/HR training pairs from TMC-2 and OHRC data...")
+                lr_img, hr_img = generate_lr_hr_pair(ohrc_img, downscale_factor=5)
+                pair_metrics = compute_pair_metrics(lr_img, hr_img)
+                time.sleep(0.2)
+
+                # ─── Patch Construction ───
+                BackgroundJobExecutor._update_status(job_id, "PATCHES", 18.0,
+                    "Constructing training patches from LR/HR pairs...")
+                patches = construct_training_patches(
+                    [lr_img], [hr_img],
+                    lr_patch_size=20, hr_patch_size=100,
+                    stride_lr=10, stride_hr=50
+                )
+                time.sleep(0.2)
+
+                # ─── Dataset Splitting ───
+                BackgroundJobExecutor._update_status(job_id, "SPLITTING", 20.0,
+                    "Splitting patches into train/validation/test sets...")
+                if patches["num_patches"] > 0:
+                    split_data = split_dataset(patches["lr_patches"], patches["hr_patches"])
+                    split_summary = get_split_summary(split_data)
+                else:
+                    split_summary = {"total_patches": 0, "train_count": 0, "val_count": 0, "test_count": 0}
+                time.sleep(0.2)
+
             else:
                 # Real uploaded data (stub implementation retrieving from files)
                 # Fallback to demo files if none provided
@@ -355,9 +412,15 @@ class BackgroundJobExecutor:
                 why_sel, report_html_path
             )
             
+            region_id = payload.get("region_id")
+            region_info = get_region_by_id(region_id) if region_id else None
+
             # Package final results
             results = {
                 "run_id": job_id,
+                "mode": mode,
+                "region_id": region_id,
+                "region_name": region_info["name"] if region_info else "Demo Surface",
                 "sr_model": sr_model,
                 "sr_metrics": sr_metrics,
                 "hazard_stats": hazard_stats,
@@ -368,6 +431,9 @@ class BackgroundJobExecutor:
                 "navigation_astar": nav_res,
                 "navigation_dijkstra": dijkstra_res,
                 "files": {
+                    "tmc_png": f"/api/region_data/{region_id}/tmc_tile.png" if mode == "region" and region_id else "/api/demo_data/synthetic_tmc.png",
+                    "ohrc_png": f"/api/region_data/{region_id}/ohrc_tile.png" if mode == "region" and region_id else "/api/demo_data/synthetic_ohrc.png",
+                    "dem_png": f"/api/region_data/{region_id}/dem_tile.png" if mode == "region" and region_id else "/api/demo_data/synthetic_dem.png",
                     "hazard_map_png": f"/api/results/{job_id}/hazard_map.png",
                     "landing_geojson": f"/api/results/{job_id}/landing_zones.geojson",
                     "route_geojson": f"/api/results/{job_id}/nav_route.geojson" if nav_res["status"] == "SUCCESS" else None,

@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import { 
   Play, Compass, Settings, Database, Sliders, 
   Map, Activity, ShieldCheck, ActivitySquare, Info, 
-  RotateCcw, Save, Loader2, AlertCircle, FileText
+  RotateCcw, Save, Loader2, AlertCircle, FileText, Globe
 } from 'lucide-react';
 
 import { Canvas } from "@react-three/fiber";
@@ -16,6 +16,8 @@ import InteractiveMap2D from './components/InteractiveMap2D';
 import TerrainViewer3D from './components/TerrainViewer3D';
 import EvaluationPanel from './components/EvaluationPanel';
 import DatasetPanel from './components/DatasetPanel';
+import MoonSurfaceExplorer from './components/MoonSurfaceExplorer';
+import HeatMapOverlay from './components/HeatMapOverlay';
 
 export type MissionPhase =
   | "loading"
@@ -31,7 +33,14 @@ export type MissionPhase =
   | "success";
 
 export default function App() {
-  const [view, setView] = useState<'landing' | 'dashboard'>('landing');
+  const [view, setView] = useState<'landing' | 'explorer' | 'dashboard'>('landing');
+
+  // Explorer state
+  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+  const [analyzedRegions, setAnalyzedRegions] = useState<Record<string, any>>({});
+  const [analyzingRegion, setAnalyzingRegion] = useState<string | null>(null);
+  const [explorerProgress, setExplorerProgress] = useState(0);
+  const [explorerStageText, setExplorerStageText] = useState('');
 
   // Landing Page States
   const [phase, setPhase] = useState<MissionPhase>("loading");
@@ -358,7 +367,7 @@ export default function App() {
           onLogoClick={handleLogoClick}
           missionOverride={missionOverride}
           onExploreMission={() => {
-            setView('dashboard');
+            setView('explorer');
             if (tweenRef.current) {
               tweenRef.current.kill();
               tweenRef.current = null;
@@ -371,38 +380,149 @@ export default function App() {
     );
   }
 
+  // ─── EXPLORER VIEW: Interactive Moon Surface ───
+  if (view === 'explorer') {
+    const handleRegionSelect = (regionId: string) => {
+      setSelectedRegionId(regionId);
+    };
+
+    const handleAnalyze = (regionId: string) => {
+      setAnalyzingRegion(regionId);
+      setExplorerProgress(0);
+      setExplorerStageText('Initializing Nexora pipeline...');
+
+      fetch(`/api/regions/${regionId}/analyze`, { method: 'POST' })
+        .then(res => res.json())
+        .then(job => {
+          // Poll for results
+          const timer = setInterval(() => {
+            fetch(`/api/jobs/${job.job_id}`)
+              .then(res => res.json())
+              .then(jobData => {
+                setExplorerProgress(jobData.progress || 0);
+                setExplorerStageText(jobData.current_stage || '');
+
+                if (jobData.status === 'COMPLETED') {
+                  clearInterval(timer);
+                  setAnalyzingRegion(null);
+                  setAnalyzedRegions(prev => ({
+                    ...prev,
+                    [regionId]: jobData
+                  }));
+                  // Set active run for dashboard and auto-redirect
+                  setActiveRun(jobData);
+                  setView('dashboard');
+                  setActiveTab('overview');
+                } else if (jobData.status === 'FAILED') {
+                  clearInterval(timer);
+                  setAnalyzingRegion(null);
+                  showToast(`Analysis failed: ${jobData.error_message}`);
+                }
+              })
+              .catch(() => {
+                clearInterval(timer);
+                setAnalyzingRegion(null);
+              });
+          }, 800);
+        })
+        .catch(err => {
+          console.error(err);
+          setAnalyzingRegion(null);
+          showToast('Failed to start analysis.');
+        });
+    };
+
+    return (
+      <div className="h-screen flex flex-col bg-black text-white overflow-hidden">
+        {/* Explorer Header */}
+        <header className="bg-aerospace-900/90 border-b border-aerospace-800 px-6 py-3 flex items-center justify-between shrink-0" style={{ backdropFilter: 'blur(8px)' }}>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                if (tweenRef.current) { tweenRef.current.kill(); tweenRef.current = null; }
+                setView('landing');
+                setPhase('loading');
+                setScrollProgress(0);
+                scrollRef.current = 0;
+                setLoadingDone(false);
+                setLoadProgress(0);
+              }}
+              className="flex items-center gap-2 hover:opacity-80 transition"
+            >
+              <div className="w-8 h-8 border rounded flex items-center justify-center font-bold font-mono text-sm" style={{ background: 'rgba(0,212,255,0.1)', borderColor: 'rgba(0,212,255,0.4)', color: '#00d4ff' }}>N</div>
+              <div>
+                <div className="display-text text-xs font-bold text-white" style={{ letterSpacing: '0.15em' }}>NEXORA</div>
+                <div className="hud-text" style={{ fontSize: '8px', color: 'rgba(0,212,255,0.4)', letterSpacing: '0.1em' }}>LUNAR ANALYSIS PLATFORM</div>
+              </div>
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            {Object.keys(analyzedRegions).length > 0 && (
+              <button
+                onClick={() => {
+                  setView('dashboard');
+                  if (!activeRun && Object.keys(analyzedRegions).length > 0) {
+                    const lastKey = Object.keys(analyzedRegions).pop()!;
+                    setActiveRun(analyzedRegions[lastKey]);
+                  }
+                }}
+                className="px-4 py-1.5 text-xs font-mono font-bold rounded flex items-center gap-1.5 transition"
+                style={{ background: 'rgba(0,255,136,0.1)', border: '1px solid rgba(0,255,136,0.4)', color: '#00ff88' }}
+              >
+                <ShieldCheck size={14} />
+                VIEW DASHBOARD ({Object.keys(analyzedRegions).length})
+              </button>
+            )}
+            <div className="flex items-center gap-1.5">
+              <Globe size={12} style={{ color: 'rgba(0,212,255,0.5)' }} />
+              <span className="hud-text" style={{ fontSize: '9px', color: 'rgba(0,212,255,0.5)', letterSpacing: '0.1em' }}>12 REGIONS AVAILABLE</span>
+            </div>
+          </div>
+        </header>
+
+        {/* Explorer Content */}
+        <MoonSurfaceExplorer
+          onRegionSelect={handleRegionSelect}
+          onAnalyze={handleAnalyze}
+          analyzedRegions={analyzedRegions}
+          analyzing={analyzingRegion}
+          progress={explorerProgress}
+          stageText={explorerStageText}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-aerospace-950 flex flex-col font-sans select-none text-aerospace-100">
       
-      {/* 1. TOP HEADER HEADER BAR */}
+      {/* 1. TOP HEADER BAR */}
       <header className="bg-aerospace-900 border-b border-aerospace-800 px-6 py-4 flex items-center justify-between shadow-md">
-        <div 
-          onClick={() => {
-            if (tweenRef.current) {
-              tweenRef.current.kill();
-              tweenRef.current = null;
-            }
-            setView('landing');
-            setPhase('loading');
-            setScrollProgress(0);
-            scrollRef.current = 0;
-            setLoadingDone(false);
-            setLoadProgress(0);
-          }}
-          className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition select-none"
-          title="Return to Mission Landing Page"
-        >
-          <div className="w-9 h-9 bg-cyan-950/80 border border-cyan-500 rounded flex items-center justify-center text-cyan-400 font-bold font-mono text-xl shadow-[0_0_10px_rgba(6,182,212,0.3)]">
-            LS
+        <div className="flex items-center gap-3">
+          <div 
+            onClick={() => setView('explorer')}
+            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition select-none"
+            title="Return to Moon Explorer"
+          >
+            <div className="w-9 h-9 bg-cyan-950/80 border border-cyan-500 rounded flex items-center justify-center text-cyan-400 font-bold font-mono text-xl shadow-[0_0_10px_rgba(6,182,212,0.3)]">
+              N
+            </div>
+            <div>
+              <h1 className="text-base font-bold uppercase tracking-wider text-white font-mono flex items-center gap-1.5">
+                Nexora — LunarSafe AI
+              </h1>
+              <p className="text-[10px] text-aerospace-400 uppercase tracking-widest font-mono">
+                TMC/OHRC Hazard Mapping & Safe Landing Platform
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-base font-bold uppercase tracking-wider text-white font-mono flex items-center gap-1.5">
-              LunarSafe AI
-            </h1>
-            <p className="text-[10px] text-aerospace-400 uppercase tracking-widest font-mono">
-              Hazard Mapping & Safe Landing Navigation Platform
-            </p>
-          </div>
+          <button
+            onClick={() => setView('explorer')}
+            className="ml-4 px-3 py-1 text-[10px] font-mono font-bold rounded flex items-center gap-1.5 transition"
+            style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.25)', color: 'rgba(0,212,255,0.7)' }}
+          >
+            <Globe size={12} /> MOON EXPLORER
+          </button>
         </div>
 
         {/* Action Triggers */}
@@ -457,6 +577,7 @@ export default function App() {
           <div className="text-[10px] font-mono text-aerospace-500 uppercase tracking-widest px-3 mb-2">CONTROL PANEL</div>
           {[
             { id: 'overview', name: 'Overview', icon: Map },
+            { id: 'heatmap', name: 'Hazard Heatmap', icon: ShieldCheck },
             { id: 'map2d', name: '2D Canvas Map', icon: Compass },
             { id: 'sim3d', name: '3D Simulation', icon: Activity },
             { id: 'eval', name: 'Evaluation Panel', icon: ActivitySquare },
@@ -532,6 +653,21 @@ export default function App() {
               activeTab={activeTab} 
               setActiveTab={setActiveTab} 
             />
+          )}
+          {activeTab === 'heatmap' && selectedRegionId && activeRun && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={16} style={{ color: '#00d4ff' }} />
+                <span className="text-sm font-semibold text-aerospace-200 uppercase tracking-wider font-mono">Hazard Heatmap — Safe Landing Zones</span>
+              </div>
+              <HeatMapOverlay regionId={selectedRegionId} runData={activeRun} />
+            </div>
+          )}
+          {activeTab === 'heatmap' && (!selectedRegionId || !activeRun) && (
+            <div className="flex items-center justify-center h-64 text-aerospace-500 text-xs font-mono">
+              Select and analyze a region from the Moon Explorer to view the heatmap.
+              <button onClick={() => setView('explorer')} className="ml-2 text-cyan-400 underline">Open Explorer</button>
+            </div>
           )}
           {activeTab === 'map2d' && <InteractiveMap2D runData={activeRun} />}
           {activeTab === 'sim3d' && <TerrainViewer3D runData={activeRun} config={settings} />}

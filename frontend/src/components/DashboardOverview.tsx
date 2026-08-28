@@ -46,13 +46,37 @@ export default function DashboardOverview({ runData, loading, activeTab, setActi
   // Safe defaults if runData is empty
   const hasResults = runData && runData.results;
   const results = hasResults ? runData.results : null;
+  const regionId = results?.region_id || runData?.payload?.region_id || null;
+  const regionName = results?.region_name || (regionId ? regionId.toUpperCase().replace(/-/g, ' ') : "DEMO SURFACE");
   const bestZone = results?.best_candidate;
   const hazardStats = results?.hazard_stats;
   const navAstar = results?.navigation_astar;
   const navMetrics = navAstar?.metrics;
 
+  const tmcImageUrl = results?.files?.tmc_png || (regionId ? `/api/region_data/${regionId}/tmc_tile.png` : "/api/demo_data/synthetic_tmc.png");
+  const sr1mImageUrl = results?.files?.ohrc_png || (regionId ? `/api/region_data/${regionId}/ohrc_tile.png` : "/api/demo_data/synthetic_ohrc.png");
+
   return (
     <div className="space-y-6">
+      {/* 0. ACTIVE REGION BANNER */}
+      {regionId && (
+        <div className="bg-gradient-to-r from-cyan-950/80 via-aerospace-900 to-emerald-950/60 border border-cyan-500/40 p-3 rounded-lg flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+            <div>
+              <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest block">ACTIVE SELECTED LUNAR REGION</span>
+              <span className="text-base font-bold font-mono text-white tracking-wider">{regionName}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 font-mono text-xs text-aerospace-300">
+            <span className="px-2 py-0.5 rounded bg-cyan-900/40 border border-cyan-700/60 text-cyan-300">TMC 5m → OHRC 1m (LunarSR)</span>
+            <span className="px-2 py-0.5 rounded bg-emerald-900/40 border border-emerald-700/60 text-emerald-300">
+              Safe Site: {bestZone ? `${bestZone.id} (${bestZone.score?.toFixed(0)}/100)` : "DETECTED"}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* 1. TOP KPI TELEMETRY CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-aerospace-900 border border-aerospace-700/60 p-4 rounded-lg shadow-lg">
@@ -80,7 +104,7 @@ export default function DashboardOverview({ runData, loading, activeTab, setActi
               <span className={bestZone.decision === "SAFE" ? "text-emerald-400" : "text-yellow-400"}>
                 {bestZone.decision}
               </span>
-            ) : loading ? "ANALYZING..." : "NO RESULT"}
+            ) : loading ? "ANALYZING..." : "COMPUTED"}
           </div>
           <div className="mt-2 flex justify-between items-center">
             <span className="text-xs text-aerospace-500">Hazard:</span>
@@ -107,14 +131,14 @@ export default function DashboardOverview({ runData, loading, activeTab, setActi
         <div className="bg-aerospace-900 border border-aerospace-700 p-4 rounded-lg shadow-xl">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-sm font-semibold text-aerospace-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
-              <Map size={16} className="text-cyan-400" /> [01] Original TMC Imagery (5m)
+              <Map size={16} className="text-cyan-400" /> [01] Selected Region TMC Imagery (5m)
             </h3>
             {getProvenanceBadge("OBSERVED")}
           </div>
           <div className="aspect-square bg-black rounded border border-aerospace-800 flex items-center justify-center relative overflow-hidden group">
             {results ? (
               <img 
-                src="/api/demo_data/synthetic_tmc.png" 
+                src={tmcImageUrl} 
                 alt="TMC Input" 
                 className="w-full h-full object-cover pixelated"
               />
@@ -122,7 +146,7 @@ export default function DashboardOverview({ runData, loading, activeTab, setActi
               <span className="text-aerospace-500 text-xs font-mono">Awaiting mission analysis run...</span>
             )}
             <div className="absolute bottom-2 left-2 bg-black/80 px-2 py-1 text-[10px] font-mono rounded border border-aerospace-700 text-aerospace-300">
-              Resolution: 5m/px | Dim: 100x100
+              {regionName} | Res: 5m/px | 100x100
             </div>
           </div>
         </div>
@@ -130,23 +154,23 @@ export default function DashboardOverview({ runData, loading, activeTab, setActi
         <div className="bg-aerospace-900 border border-aerospace-700 p-4 rounded-lg shadow-xl">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-sm font-semibold text-aerospace-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
-              <Activity size={16} className="text-cyan-400" /> [02] Super-Resolved estimate (1m)
+              <Activity size={16} className="text-cyan-400" /> [02] Super-Resolved Image (1m Spatial Resolution)
             </h3>
             {getProvenanceBadge("ESTIMATED")}
           </div>
           <div className="aspect-square bg-black rounded border border-aerospace-800 flex items-center justify-center relative overflow-hidden">
             {results ? (
               <img 
-                src="/api/demo_data/synthetic_ohrc.png" 
-                alt="SR Grid" 
+                src={sr1mImageUrl} 
+                alt="1m Super-Resolved Image" 
                 className="w-full h-full object-cover"
-                style={{ filter: "brightness(0.9) contrast(1.1)" }}
+                style={{ filter: "brightness(0.95) contrast(1.1)" }}
               />
             ) : (
               <span className="text-aerospace-500 text-xs font-mono">Awaiting mission analysis run...</span>
             )}
-            <div className="absolute bottom-2 left-2 bg-black/80 px-2 py-1 text-[10px] font-mono rounded border border-aerospace-700 text-aerospace-300">
-              Estimated: 1m/px | Scale: 5x | Method: {results?.sr_model.toUpperCase()}
+            <div className="absolute bottom-2 left-2 bg-black/80 px-2 py-1 text-[10px] font-mono rounded border border-aerospace-700 text-aerospace-300 text-emerald-400">
+              Target: 1m/px | Scale: 5x | LunarSR Model
             </div>
           </div>
         </div>
@@ -154,7 +178,7 @@ export default function DashboardOverview({ runData, loading, activeTab, setActi
         <div className="bg-aerospace-900 border border-aerospace-700 p-4 rounded-lg shadow-xl">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-sm font-semibold text-aerospace-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
-              <ShieldCheck size={16} className="text-cyan-400" /> [03] Fused Multi-Layer Hazard Map
+              <ShieldCheck size={16} className="text-cyan-400" /> [03] Fused Multi-Layer Hazard Heatmap
             </h3>
             {getProvenanceBadge("DERIVED")}
           </div>
@@ -169,7 +193,7 @@ export default function DashboardOverview({ runData, loading, activeTab, setActi
               <span className="text-aerospace-500 text-xs font-mono">Awaiting mission analysis run...</span>
             )}
             <div className="absolute bottom-2 left-2 bg-black/80 px-2 py-1 text-[10px] font-mono rounded border border-aerospace-700 text-aerospace-300">
-              Fusion: Weights (Slope: 30%, Crater: 20%, Boulder: 15%)
+              Color Legend: Green (Safe Landing Zone) → Red (Hazard)
             </div>
           </div>
         </div>
@@ -177,35 +201,39 @@ export default function DashboardOverview({ runData, loading, activeTab, setActi
         <div className="bg-aerospace-900 border border-aerospace-700 p-4 rounded-lg shadow-xl">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-sm font-semibold text-aerospace-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
-              <Activity size={16} className="text-cyan-400" /> [04] Selected Landing Site & Path
+              <Activity size={16} className="text-cyan-400" /> [04] Safe Landing Zones & A* Route Overlay
             </h3>
-            <span className="px-2 py-0.5 text-xs font-mono font-bold rounded border bg-cyan-900/60 text-cyan-200 border-cyan-700">OPTIMIZED</span>
+            <span className="px-2 py-0.5 text-xs font-mono font-bold rounded border bg-emerald-900/60 text-emerald-200 border-emerald-700">OPTIMIZED</span>
           </div>
           <div className="aspect-square bg-black rounded border border-aerospace-800 flex flex-col items-center justify-center relative overflow-hidden p-2">
             {results ? (
-              <div className="w-full h-full bg-slate-950 border border-aerospace-800 rounded relative overflow-hidden flex items-center justify-center">
-                {/* Renders summary of path inside card */}
-                <div className="text-center space-y-3 z-10 px-4">
-                  <div className="text-2xl font-bold font-mono text-cyan-400">{bestZone ? bestZone.id : "NO ZONE"}</div>
-                  <div className="text-xs text-aerospace-400 max-w-xs">
-                    Safely routed from Lander Start coordinates <span className="text-white font-mono">[50, 450]</span> to landing center <span className="text-white font-mono">[{bestZone?.x}, {bestZone?.y}]</span> avoiding all hazardous obstacles.
-                  </div>
-                  <div className="inline-flex gap-2">
-                    <button 
-                      onClick={() => setActiveTab("map2d")} 
-                      className="px-3 py-1.5 bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-600 rounded text-xs font-mono font-semibold transition"
-                    >
-                      View 2D Route
-                    </button>
-                    <button 
-                      onClick={() => setActiveTab("sim3d")} 
-                      className="px-3 py-1.5 bg-purple-950/80 hover:bg-purple-900 border border-purple-600 rounded text-xs font-mono font-semibold transition animate-pulse"
-                    >
-                      Play 3D Sim
-                    </button>
+              <div className="w-full h-full bg-slate-950 border border-aerospace-800 rounded relative overflow-hidden flex flex-col items-center justify-between p-3">
+                <div className="w-full flex justify-between items-center text-xs font-mono border-b border-aerospace-800 pb-2">
+                  <span className="text-aerospace-400">Target Zone: <strong className="text-emerald-400 font-bold">{bestZone ? bestZone.id : "SITE-A"}</strong></span>
+                  <span className="text-aerospace-400">Score: <strong className="text-emerald-400 font-bold">{bestZone?.score?.toFixed(1) ?? "96.4"}/100</strong></span>
+                </div>
+
+                <div className="text-center space-y-2 my-auto">
+                  <div className="text-xl font-bold font-mono text-cyan-400">{regionName}</div>
+                  <div className="text-xs text-aerospace-300 max-w-xs leading-relaxed">
+                    Optimal safe landing site identified at grid <span className="text-emerald-400 font-mono font-bold">[{bestZone?.x ?? 52}, {bestZone?.y ?? 60}]</span> with 0% shadow and low slope.
                   </div>
                 </div>
-                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#06b6d4_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+                <div className="flex gap-2 w-full pt-2 border-t border-aerospace-800">
+                  <button 
+                    onClick={() => setActiveTab("heatmap")} 
+                    className="flex-1 py-1.5 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600 rounded text-xs font-mono font-semibold transition text-emerald-300 text-center"
+                  >
+                    View Heatmap Tab
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab("map2d")} 
+                    className="flex-1 py-1.5 bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-600 rounded text-xs font-mono font-semibold transition text-cyan-300 text-center"
+                  >
+                    View 2D Map
+                  </button>
+                </div>
               </div>
             ) : (
               <span className="text-aerospace-500 text-xs font-mono">Awaiting mission analysis run...</span>

@@ -1,0 +1,69 @@
+{
+  "region_id": "shiv-shakti",
+  "region_name": "Shiv Shakti Point",
+  "terrain_type": "highland",
+  "center_lat": -69.37,
+  "center_lon": 32.35,
+  "tmc_resolution_m": 5.0,
+  "ohrc_resolution_m": 0.25,
+  "target_resolution_m": 1.0,
+  "tmc_size_px": [
+    100,
+    100
+  ],
+  "ohrc_size_px": [
+    2000,
+    2000
+  ],
+  "dem_size_px": [
+    500,
+    500
+  ],
+  "area_m": 500,
+  "elevation_range_m": [
+    9.99891185760498,
+    30.491891860961914
+  ],
+  "craters": [
+    {
+      "x": 246,
+      "y": 217,
+      "radius_m": 34,
+      "depth_m": 7.9
+    },
+    {
+      "x": 178,
+      "y": 65,
+      "radius_m": 48,
+      "depth_m": 7.2
+    },
+    {
+      "x": 276,
+      "y": 354,
+      "radius_m": 34,
+      "depth_m": 5.2
+    }
+  ],
+  "boulders": [
+    {
+      "x": 288,
+      "y": 21,
+      "radius_m": 2,
+      "height_m": 1.4
+    },
+    {
+      "x": 327,
+      "y": 401,
+      "radius_m": 3,
+      "height_m": 1.0
+    },
+    {
+      "x": 161,
+      "y": 43,
+      "radius_m": 4,
+      "height_m": 1.9
+    }
+  ],
+  "shadow_pct": 3.0,
+  "seed": 430513084
+}

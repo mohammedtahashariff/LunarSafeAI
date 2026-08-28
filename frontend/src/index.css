@@ -281,3 +281,54 @@ body,
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Explorer & Heatmap Styles ───────────────────────────── */
+
+.explorer-canvas {
+  cursor: crosshair;
+  image-rendering: auto;
+}
+
+.region-pulse {
+  animation: region-pulse 2s ease-in-out infinite;
+}
+
+@keyframes region-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+.heatmap-legend-bar {
+  background: linear-gradient(90deg, #00ff88, #88ff00, #ffdd00, #ff8800, #ff3333);
+  height: 8px;
+  border-radius: 2px;
+}
+
+.accent-cyan-500 {
+  accent-color: #00d4ff;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Smooth scrollbar for explorer panel */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(0,212,255,0.15);
+  border-radius: 2px;
+}
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,212,255,0.3);
+}
+

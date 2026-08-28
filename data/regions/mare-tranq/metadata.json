@@ -1,0 +1,63 @@
+{
+  "region_id": "mare-tranq",
+  "region_name": "Mare Tranquillitatis",
+  "terrain_type": "mare",
+  "center_lat": 8.5,
+  "center_lon": 31.4,
+  "tmc_resolution_m": 5.0,
+  "ohrc_resolution_m": 0.25,
+  "target_resolution_m": 1.0,
+  "tmc_size_px": [
+    100,
+    100
+  ],
+  "ohrc_size_px": [
+    2000,
+    2000
+  ],
+  "dem_size_px": [
+    500,
+    500
+  ],
+  "area_m": 500,
+  "elevation_range_m": [
+    10.648004531860352,
+    27.51900863647461
+  ],
+  "craters": [
+    {
+      "x": 329,
+      "y": 204,
+      "radius_m": 15,
+      "depth_m": 3.7
+    },
+    {
+      "x": 180,
+      "y": 360,
+      "radius_m": 30,
+      "depth_m": 2.6
+    },
+    {
+      "x": 467,
+      "y": 39,
+      "radius_m": 47,
+      "depth_m": 10.7
+    }
+  ],
+  "boulders": [
+    {
+      "x": 305,
+      "y": 19,
+      "radius_m": 3,
+      "height_m": 1.9
+    },
+    {
+      "x": 152,
+      "y": 484,
+      "radius_m": 4,
+      "height_m": 2.2
+    }
+  ],
+  "shadow_pct": 2.0,
+  "seed": 1869250898
+}

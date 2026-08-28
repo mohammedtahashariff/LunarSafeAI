@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Nexora Mission Scientific Report - RUN-LUNAR-20260828-BAABC9</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; max-width: 900px; margin: 0 auto; padding: 40px 20px; background: #f8fafc; }
+        .header { border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { margin: 0; color: #0f172a; font-size: 24px; font-weight: 700; }
+        .run-id { color: #06b6d4; font-size: 14px; font-family: monospace; margin-top: 5px; font-weight: bold; }
+        .section { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .section-title { font-size: 16px; font-weight: 600; color: #0f172a; margin-top: 0; margin-bottom: 16px; border-left: 4px solid #06b6d4; padding-left: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .metric-label { font-size: 12px; color: #64748b; font-weight: 500; margin-bottom: 4px; }
+        .metric-value { font-size: 15px; font-weight: 600; color: #1e293b; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+        .badge-observed { background: #e0f2fe; color: #0369a1; }
+        .badge-estimated { background: #fef3c7; color: #b45309; }
+        .badge-derived { background: #dcfce7; color: #15803d; }
+        .disclaimer { background: #fffbeb; border: 1px solid #fef3c7; border-radius: 6px; padding: 15px; font-size: 13px; color: #b45309; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Nexora — Scientific Mission Report</h1>
+        <div class="run-id">RUN ID: RUN-LUNAR-20260828-BAABC9</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">1. Dataset Summary & Provenance</div>
+        <div class="grid">
+            <div>
+                <div class="metric-label">Input Imagery</div>
+                <div class="metric-value">TMC2_shiv-shakti <span class="badge badge-observed">OBSERVED</span></div>
+            </div>
+            <div>
+                <div class="metric-label">Spatial Resolution</div>
+                <div class="metric-value">5.0 meters</div>
+            </div>
+            <div>
+                <div class="metric-label">Elevation Model</div>
+                <div class="metric-value">Digital Elevation Model (DEM) 
+                    <span class="badge badge-derived">DERIVED</span>
+                </div>
+            </div>
+            <div>
+                <div class="metric-label">Target Grid spacing</div>
+                <div class="metric-value">1.0 meter <span class="badge badge-estimated">ESTIMATED</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">2. Super-Resolution Reconstruction</div>
+        <div class="grid">
+            <div>
+                <div class="metric-label">upscaling Algorithm</div>
+                <div class="metric-value" style="text-transform: uppercase;">lunarsr</div>
+            </div>
+            <div>
+                <div class="metric-label">Inference Status</div>
+                <div class="metric-value">Completed (<span class="badge badge-estimated">ESTIMATED</span>)</div>
+            </div>
+            <div>
+                <div class="metric-label">SSIM (Structural Similarity)</div>
+                <div class="metric-value">0.81</div>
+            </div>
+            <div>
+                <div class="metric-label">PSNR (Peak Signal-to-Noise Ratio)</div>
+                <div class="metric-value">24.5 dB</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">3. Selected Landing Zone Diagnostic</div>
+        <div class='metric-value' style='color:#ef4444;'>NO VALID LANDING ZONE IDENTIFIED.</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">4. Risk-Aware Navigation Path</div>
+        <div class='metric-value'>No path planned.</div>
+    </div>
+
+    <div class="disclaimer">
+        <strong>SCIENTIFIC LIMITATION NOTICE:</strong> Super-resolved imagery is an estimated higher-resolution representation
+        derived from lower-resolution source imagery. It must not be interpreted as direct physical observation.
+        Slope, physical terrain roughness, local relief and elevation-dependent hazards require valid elevation data (DEM)
+        or a separately validated terrain reconstruction method.
+    </div>
+</body>
+</html>

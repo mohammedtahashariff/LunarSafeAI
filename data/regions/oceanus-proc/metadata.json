@@ -1,0 +1,38 @@
+{
+  "region_id": "oceanus-proc",
+  "region_name": "Oceanus Procellarum",
+  "terrain_type": "large_mare",
+  "center_lat": 18.4,
+  "center_lon": -57.4,
+  "tmc_resolution_m": 5.0,
+  "ohrc_resolution_m": 0.25,
+  "target_resolution_m": 1.0,
+  "tmc_size_px": [
+    100,
+    100
+  ],
+  "ohrc_size_px": [
+    2000,
+    2000
+  ],
+  "dem_size_px": [
+    500,
+    500
+  ],
+  "area_m": 500,
+  "elevation_range_m": [
+    18.023324966430664,
+    26.464916229248047
+  ],
+  "craters": [
+    {
+      "x": 122,
+      "y": 189,
+      "radius_m": 27,
+      "depth_m": 2.9
+    }
+  ],
+  "boulders": [],
+  "shadow_pct": 0.3,
+  "seed": 214540151
+}
