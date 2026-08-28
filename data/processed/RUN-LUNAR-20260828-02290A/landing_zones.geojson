@@ -1,0 +1,24 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          136.0,
+          248.0
+        ]
+      },
+      "properties": {
+        "id": "SITE-A",
+        "suitability": 12.4,
+        "mean_slope": 3.2,
+        "max_slope": 5.8,
+        "mean_hazard": 0.876,
+        "shadow_percent": 0.0,
+        "decision": "CONDITIONAL"
+      }
+    }
+  ]
+}

@@ -16,7 +16,7 @@ from backend.app.processing.uncertainty import calculate_uncertainty_map
 from backend.app.processing.landing import detect_landing_candidates, generate_landing_explanation
 from backend.app.processing.navigation import plan_route
 from backend.app.processing.export import (
-    export_hazard_map_png, export_landing_zones_geojson, export_navigation_geojson, generate_scientific_html_report
+    export_hazard_map_png, export_landing_zones_geojson, export_navigation_geojson, generate_scientific_html_report, generate_scientific_pdf_report
 )
 from backend.app.processing.lunar_regions import load_region_data, get_region_by_id
 from backend.app.processing.tmc_ohrc_intersection import generate_region_coverage
@@ -399,21 +399,39 @@ class BackgroundJobExecutor:
             hazard_png_path = os.path.join(export_dir, "hazard_map.png")
             export_hazard_map_png(fused_risk, hazard_png_path)
             
+            slope_png_path = os.path.join(export_dir, "slope_map.png")
+            export_hazard_map_png(slope_risk, slope_png_path)
+            
             landing_geojson_path = os.path.join(export_dir, "landing_zones.geojson")
             export_landing_zones_geojson(candidates, landing_geojson_path)
             
-            if nav_res["status"] == "SUCCESS":
-                nav_geojson_path = os.path.join(export_dir, "nav_route.geojson")
-                export_navigation_geojson(nav_res["path"], nav_geojson_path)
-                
+            region_id = payload.get("region_id")
+            region_info = get_region_by_id(region_id) if region_id else None
+            
+            # Paths to images for base64 report embedding
+            if mode == "region" and region_id:
+                tmc_file_path = f"data/regions/{region_id}/tmc_tile.png"
+                ohrc_file_path = f"data/regions/{region_id}/ohrc_tile.png"
+            else:
+                tmc_file_path = "data/demo/synthetic_tmc.png"
+                ohrc_file_path = "data/demo/synthetic_ohrc.png"
+
             report_html_path = os.path.join(export_dir, "mission_report.html")
             generate_scientific_html_report(
                 job_id, tmc_meta, sr_model, sr_metrics, hazard_stats, best_cand, nav_res.get("metrics"),
-                why_sel, report_html_path
+                why_sel, report_html_path, region_info=region_info,
+                tmc_path=tmc_file_path, ohrc_path=ohrc_file_path, hazard_path=hazard_png_path
             )
-            
-            region_id = payload.get("region_id")
-            region_info = get_region_by_id(region_id) if region_id else None
+
+            report_pdf_path = os.path.join(export_dir, "mission_report.pdf")
+            try:
+                generate_scientific_pdf_report(
+                    job_id, tmc_meta, sr_model, sr_metrics, hazard_stats, best_cand, nav_res.get("metrics"),
+                    why_sel, report_pdf_path, region_info=region_info,
+                    tmc_path=tmc_file_path, ohrc_path=ohrc_file_path, hazard_path=hazard_png_path
+                )
+            except Exception as pdf_err:
+                print(f"PDF Report Generation Error for {job_id}: {pdf_err}")
 
             # Package final results
             results = {
@@ -435,9 +453,11 @@ class BackgroundJobExecutor:
                     "ohrc_png": f"/api/region_data/{region_id}/ohrc_tile.png" if mode == "region" and region_id else "/api/demo_data/synthetic_ohrc.png",
                     "dem_png": f"/api/region_data/{region_id}/dem_tile.png" if mode == "region" and region_id else "/api/demo_data/synthetic_dem.png",
                     "hazard_map_png": f"/api/results/{job_id}/hazard_map.png",
+                    "slope_map_png": f"/api/results/{job_id}/slope_map.png",
                     "landing_geojson": f"/api/results/{job_id}/landing_zones.geojson",
                     "route_geojson": f"/api/results/{job_id}/nav_route.geojson" if nav_res["status"] == "SUCCESS" else None,
-                    "report_html": f"/api/results/{job_id}/report.html"
+                    "report_html": f"/api/results/{job_id}/mission_report.html",
+                    "report_pdf": f"/api/results/{job_id}/mission_report.pdf"
                 }
             }
             

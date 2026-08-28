@@ -219,6 +219,20 @@ export default function App() {
     }
   }, [logoClicks]);
 
+  // Sync selectedRegionId from activeRun whenever it changes
+  // This ensures heatmap tab and other region-dependent UI works
+  // when switching runs via Dataset Registry or after analysis completes
+  useEffect(() => {
+    if (activeRun) {
+      const regionFromResults = activeRun.results?.region_id;
+      const regionFromPayload = activeRun.payload?.region_id;
+      const runRegionId = regionFromResults || regionFromPayload || null;
+      if (runRegionId && runRegionId !== selectedRegionId) {
+        setSelectedRegionId(runRegionId);
+      }
+    }
+  }, [activeRun]);
+
   // Fetch initial configs and run logs for Dashboard
   useEffect(() => {
     fetchConfigs();
@@ -494,7 +508,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-aerospace-950 flex flex-col font-sans select-none text-aerospace-100">
+    <div className="h-screen overflow-hidden bg-aerospace-950 flex flex-col font-sans select-none text-aerospace-100">
       
       {/* 1. TOP HEADER BAR */}
       <header className="bg-aerospace-900 border-b border-aerospace-800 px-6 py-4 flex items-center justify-between shadow-md">
@@ -611,16 +625,26 @@ export default function App() {
                 <span className="text-emerald-400">{activeRun.status}</span>
               </div>
               
-              {activeRun.results?.files?.report_html && (
+              <div className="mt-2 space-y-1.5 pt-1 border-t border-aerospace-800/80">
                 <a 
-                  href={`/api/results/${activeRun.job_id}/report.html`} 
+                  href={activeRun.results?.files?.report_pdf || `/api/results/${activeRun.job_id}/mission_report.pdf`} 
                   target="_blank" 
                   rel="noreferrer"
-                  className="mt-2 block w-full py-1 text-center bg-cyan-950/40 hover:bg-cyan-900 border border-cyan-800 rounded font-semibold text-[9px] text-cyan-300 transition flex items-center justify-center gap-1"
+                  download={`Nexora_Scientific_Report_${activeRun.job_id}.pdf`}
+                  className="block w-full py-1.5 text-center bg-cyan-600 hover:bg-cyan-500 border border-cyan-400 text-white rounded font-bold text-[9.5px] transition flex items-center justify-center gap-1.5 shadow-[0_0_10px_rgba(6,182,212,0.3)]"
                 >
-                  <FileText size={10} /> OPEN REPORT
+                  <FileText size={11} /> DOWNLOAD STANDALONE PDF
                 </a>
-              )}
+
+                <a 
+                  href={activeRun.results?.files?.report_html || `/api/results/${activeRun.job_id}/mission_report.html`} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="block w-full py-1 text-center bg-aerospace-900 hover:bg-aerospace-850 border border-aerospace-750 text-aerospace-300 rounded font-semibold text-[9px] transition flex items-center justify-center gap-1"
+                >
+                  <Globe size={10} /> VIEW WEB REPORT
+                </a>
+              </div>
             </div>
           )}
         </nav>

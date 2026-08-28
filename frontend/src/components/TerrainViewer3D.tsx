@@ -34,6 +34,53 @@ export default function TerrainViewer3D({ runData, config }: TerrainViewer3DProp
   const results = hasResults ? runData.results : null;
   const path = results?.navigation_astar?.path || [];
   const bestZone = results?.best_candidate;
+  const regionId = results?.region_id || runData?.payload?.region_id || null;
+
+  // DEM height data loaded from actual image
+  const [demHeights, setDemHeights] = useState<Float32Array | null>(null);
+  const [demW, setDemW] = useState(100);
+  const [demH, setDemH] = useState(100);
+
+  // Load DEM image and extract height values
+  useEffect(() => {
+    const demUrl = results?.files?.dem_png
+      || (regionId ? `/api/region_data/${regionId}/dem_tile.png` : '/api/demo_data/synthetic_dem.png');
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = demUrl;
+    img.onload = () => {
+      // Draw DEM image to offscreen canvas to read pixel data
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0);
+      const imageData = ctx.getImageData(0, 0, img.width, img.height);
+      const pixels = imageData.data; // RGBA
+
+      // Extract heights from pixel values
+      // DEM is stored as 16-bit PNG; when loaded as 8-bit via canvas,
+      // we use the red channel (0-255) and scale to [0, 50] meters
+      const heights = new Float32Array(img.width * img.height);
+      for (let i = 0; i < img.width * img.height; i++) {
+        const r = pixels[i * 4];
+        const g = pixels[i * 4 + 1];
+        // Use R + G/256 for better precision from 16-bit PNG rendered as 8-bit
+        const normalizedHeight = (r + g / 256.0) / 255.0;
+        heights[i] = normalizedHeight * 50.0; // Scale to 0-50m
+      }
+
+      setDemW(img.width);
+      setDemH(img.height);
+      setDemHeights(heights);
+    };
+    img.onerror = () => {
+      // Fallback: generate a flat heightfield
+      setDemHeights(null);
+    };
+  }, [runData, regionId]);
 
   // Initialize path coords on data load
   useEffect(() => {
@@ -136,67 +183,67 @@ export default function TerrainViewer3D({ runData, config }: TerrainViewer3DProp
         mountRef.current.removeChild(renderer.domElement);
       }
     };
-  }, [exaggeration, runData]);
+  }, [exaggeration, runData, demHeights]);
 
-  // Builds the 3D heightfield terrain using DEM data heights
+  // Builds the 3D heightfield terrain using actual DEM data
   const build3DTerrain = (scene: THREE.Scene) => {
-    const demWidth = 100;
-    const demHeight = 100;
+    // Use actual DEM dimensions for geometry segments
+    const segW = demHeights ? Math.min(demW, 200) : 100;
+    const segH = demHeights ? Math.min(demH, 200) : 100;
     
-    // Standard Plane Geometry segment maps (100x100 points)
-    const geometry = new THREE.PlaneGeometry(500, 500, demWidth - 1, demHeight - 1);
+    // Standard Plane Geometry segment maps
+    const geometry = new THREE.PlaneGeometry(500, 500, segW - 1, segH - 1);
     geometry.rotateX(-Math.PI / 2); // Lay flat
     
     const pos = geometry.attributes.position;
     
-    // Sample heights: since DEM loading requires canvas reading,
-    // we use a mathematical function representing the synthetic craters
-    // to populate heights dynamically on the geometry vertices!
-    for (let i = 0; i < pos.count; i++) {
-      const vx = pos.getX(i); // ranges [-250, 250]
-      const vz = pos.getZ(i); // ranges [-250, 250]
-      
-      // Re-map to local coordinates [0, 500] matching synthetic DEM
-      const lx = vx + 250;
-      const ly = vz + 250;
-      
-      // Calculate heights
-      let h = 25.0 + 5.0 * Math.sin(lx / 80.0) * Math.cos(ly / 100.0);
-      h += 2.0 * Math.sin(lx / 30.0) * Math.cos(ly / 30.0);
-      
-      // Ridge diagonal
-      const ridge = Math.max(0, 15.0 - Math.abs(lx + ly - 650) / 15.0);
-      h += ridge;
-      
-      // Craters
-      const craters = [
-        { cx: 150.0, cy: 150.0, r: 35.0, d: 10.0 },
-        { cx: 350.0, cy: 120.0, r: 25.0, d: 7.0 },
-        { cx: 220.0, cy: 380.0, r: 45.0, d: 14.0 }
-      ];
-      
-      for (const c of craters) {
-        const d = Math.sqrt((lx - c.cx)**2 + (ly - c.cy)**2);
-        if (d < c.r) {
-          h -= c.d * (1.0 - (d / c.r)**2);
-        } else if (d < 1.4 * c.r) {
-          const rimWidth = 0.4 * c.r;
-          h += 0.25 * c.d * Math.cos(Math.PI * (d - c.r) / rimWidth - Math.PI / 2.0);
-        }
+    if (demHeights && demW > 0 && demH > 0) {
+      // ── Use actual DEM pixel heights ──
+      // Find min/max for centering
+      let hMin = Infinity, hMax = -Infinity;
+      for (let i = 0; i < demHeights.length; i++) {
+        if (demHeights[i] < hMin) hMin = demHeights[i];
+        if (demHeights[i] > hMax) hMax = demHeights[i];
       }
+      const hCenter = (hMin + hMax) / 2;
       
-      // Safe flat pad center (380, 300) with a 45m radius
-      const sz_cx = 380.0, sz_cy = 300.0, sz_r = 45.0;
-      const dist_sz = Math.sqrt((lx - sz_cx)**2 + (ly - sz_cy)**2);
-      if (dist_sz < sz_r) {
-        h = 22.0;
-      } else if (dist_sz < sz_r + 15.0) {
-        const t = (dist_sz - sz_r) / 15.0;
-        h = t * h + (1.0 - t) * 22.0;
+      for (let i = 0; i < pos.count; i++) {
+        const vx = pos.getX(i); // ranges [-250, 250]
+        const vz = pos.getZ(i); // ranges [-250, 250]
+        
+        // Re-map vertex to DEM pixel coordinates
+        const px = ((vx + 250) / 500) * (demW - 1);
+        const py = ((vz + 250) / 500) * (demH - 1);
+        
+        // Bilinear interpolation for smooth sampling
+        const x0 = Math.floor(px);
+        const y0 = Math.floor(py);
+        const x1 = Math.min(x0 + 1, demW - 1);
+        const y1 = Math.min(y0 + 1, demH - 1);
+        const fx = px - x0;
+        const fy = py - y0;
+        
+        const h00 = demHeights[y0 * demW + x0];
+        const h10 = demHeights[y0 * demW + x1];
+        const h01 = demHeights[y1 * demW + x0];
+        const h11 = demHeights[y1 * demW + x1];
+        
+        const h = (1 - fx) * (1 - fy) * h00 + fx * (1 - fy) * h10 +
+                  (1 - fx) * fy * h01 + fx * fy * h11;
+        
+        // Scale height with exaggeration, centered around midpoint
+        pos.setY(i, (h - hCenter) * exaggeration);
       }
-      
-      // Scale height
-      pos.setY(i, (h - 22.0) * exaggeration); // Center around zero
+    } else {
+      // Fallback: flat terrain with subtle noise
+      for (let i = 0; i < pos.count; i++) {
+        const vx = pos.getX(i);
+        const vz = pos.getZ(i);
+        const lx = vx + 250;
+        const ly = vz + 250;
+        let h = 25.0 + 2.0 * Math.sin(lx / 80.0) * Math.cos(ly / 100.0);
+        pos.setY(i, (h - 25.0) * exaggeration);
+      }
     }
     
     geometry.computeVertexNormals();

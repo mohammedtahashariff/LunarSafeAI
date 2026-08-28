@@ -27,6 +27,8 @@ export default function InteractiveMap2D({ runData }: InteractiveMap2DProps) {
   
   // Image cache
   const [images, setImages] = useState<any>({});
+  // Cached hazard pixel data for hover metrics (avoids canvas creation on each mouse move)
+  const hazardPixelDataRef = useRef<{ data: Uint8ClampedArray; width: number; height: number } | null>(null);
   
   const hasResults = runData && runData.results;
   const results = hasResults ? runData.results : null;
@@ -37,17 +39,17 @@ export default function InteractiveMap2D({ runData }: InteractiveMap2DProps) {
   useEffect(() => {
     if (!results) return;
     
-    const regionId = runData?.payload?.region_id || null;
-    const tmcUrl = regionId ? `/api/region_data/${regionId}/tmc_tile.png` : '/api/demo_data/synthetic_tmc.png';
-    const srUrl = regionId ? `/api/region_data/${regionId}/ohrc_tile.png` : '/api/demo_data/synthetic_ohrc.png';
-    const demUrl = regionId ? `/api/region_data/${regionId}/dem_tile.png` : '/api/demo_data/synthetic_dem.png';
+    const regionId = results.region_id || runData?.payload?.region_id || null;
     
+    // Use results.files.* which are set correctly by the backend
+    // for both region mode and demo mode
     const imageSources: any = {
-      tmc: tmcUrl,
-      sr: srUrl, // 1m spatial resolution image for the selected region
-      dem: demUrl,
-      hazard: results.files.hazard_map_png,
-      uncertainty: results.files.hazard_map_png // Fallback image for display
+      tmc: results.files?.tmc_png || (regionId ? `/api/region_data/${regionId}/tmc_tile.png` : '/api/demo_data/synthetic_tmc.png'),
+      sr: results.files?.ohrc_png || (regionId ? `/api/region_data/${regionId}/ohrc_tile.png` : '/api/demo_data/synthetic_ohrc.png'),
+      dem: results.files?.dem_png || (regionId ? `/api/region_data/${regionId}/dem_tile.png` : '/api/demo_data/synthetic_dem.png'),
+      slope: results.files?.slope_map_png || results.files?.hazard_map_png || (regionId ? `/api/region_data/${regionId}/dem_tile.png` : '/api/demo_data/synthetic_dem.png'),
+      hazard: results.files?.hazard_map_png,
+      uncertainty: results.files?.hazard_map_png // Fallback image for display
     };
     
     const loadedImages: any = {};
@@ -62,6 +64,19 @@ export default function InteractiveMap2D({ runData }: InteractiveMap2DProps) {
         loadedCount++;
         if (loadedCount === keys.length) {
           setImages(loadedImages);
+          // Cache hazard pixel data for hover telemetry
+          if (loadedImages['hazard']) {
+            const hImg = loadedImages['hazard'];
+            const tmpCanvas = document.createElement('canvas');
+            tmpCanvas.width = hImg.width;
+            tmpCanvas.height = hImg.height;
+            const tmpCtx = tmpCanvas.getContext('2d');
+            if (tmpCtx) {
+              tmpCtx.drawImage(hImg, 0, 0);
+              const imgData = tmpCtx.getImageData(0, 0, hImg.width, hImg.height);
+              hazardPixelDataRef.current = { data: imgData.data, width: hImg.width, height: hImg.height };
+            }
+          }
         }
       };
     });
@@ -240,35 +255,55 @@ export default function InteractiveMap2D({ runData }: InteractiveMap2DProps) {
     if (gridX >= 0 && gridX < 500 && gridY >= 0 && gridY < 500) {
       setCursorPos({ x: gridX, y: gridY });
       
-      // Calculate realistic simulated hover values based on grid location
-      // (Used to display instant hover metrics panel)
+      // Calculate hover values based on actual analysis results and cursor proximity to known features
       let el = 22.4;
       let sl = 3.2;
       let hz = 0.05;
       let unc = "LOW";
       
-      // Craters regions have high slope & hazard
       if (results) {
-        // Find if near crater center
-        const cx1 = 150, cy1 = 150, r1 = 35;
-        const cx2 = 350, cy2 = 120, r2 = 25;
-        const cx3 = 220, cy3 = 380, r3 = 45;
+        // Use actual hazard/candidate data from the analysis
+        const hazardStats = results.hazard_stats;
+        const regionCandidates = results.candidates || [];
+        const meanHazard = hazardStats?.mean_hazard_score ?? 0.15;
         
-        const d1 = Math.sqrt((gridX - cx1)**2 + (gridY - cy1)**2);
-        const d2 = Math.sqrt((gridX - cx2)**2 + (gridY - cy2)**2);
-        const d3 = Math.sqrt((gridX - cx3)**2 + (gridY - cy3)**2);
+        // Default values from analysis
+        hz = meanHazard;
+        sl = 3.2 + meanHazard * 12.0; // Approximate slope from hazard
         
-        if (d1 < r1 * 1.3 || d2 < r2 * 1.3 || d3 < r3 * 1.3) {
-          sl = 14.8;
-          hz = 0.85;
-          unc = "MEDIUM";
+        // Check proximity to detected landing candidates (safe zones)
+        let nearCandidate = false;
+        for (const cand of regionCandidates) {
+          const dist = Math.sqrt((gridX - cand.x)**2 + (gridY - cand.y)**2);
+          if (dist < 15) {
+            // Near safe landing zone
+            hz = cand.mean_hazard ?? 0.05;
+            sl = cand.max_slope ?? 2.0;
+            unc = "LOW";
+            nearCandidate = true;
+            break;
+          }
         }
         
-        // Ridge diagonal region
-        if (gridX + gridY > 630 && gridX + gridY < 670) {
-          sl = 12.5;
-          hz = 0.65;
-          unc = "LOW";
+        if (!nearCandidate) {
+          // Use cached hazard pixel data for position-aware estimate
+          const hpd = hazardPixelDataRef.current;
+          if (hpd) {
+            const px = Math.floor((gridX / 500) * hpd.width);
+            const py = Math.floor((gridY / 500) * hpd.height);
+            if (px >= 0 && px < hpd.width && py >= 0 && py < hpd.height) {
+              const idx = (py * hpd.width + px) * 4;
+              const r = hpd.data[idx] / 255.0;
+              const g = hpd.data[idx + 1] / 255.0;
+              hz = Math.max(0, Math.min(1, r * 0.7 + (1 - g) * 0.3));
+              sl = 2.0 + hz * 18.0;
+            }
+          }
+          
+          // Determine uncertainty from hazard level
+          if (hz > 0.6) unc = "HIGH";
+          else if (hz > 0.3) unc = "MEDIUM";
+          else unc = "LOW";
         }
       }
       

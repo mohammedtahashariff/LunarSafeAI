@@ -56,7 +56,6 @@ os.makedirs("data/demo", exist_ok=True)
 os.makedirs("data/regions", exist_ok=True)
 
 # Mount static directories
-app.mount("/api/results", StaticFiles(directory="data/processed"), name="results")
 app.mount("/api/demo_data", StaticFiles(directory="data/demo"), name="demo")
 app.mount("/api/region_data", StaticFiles(directory="data/regions"), name="regions")
 
@@ -362,7 +361,74 @@ def get_run_audit_log(run_id: str):
     }
     return audit_data
 
+import json
+from backend.app.processing.export import generate_scientific_pdf_report
+
+def generate_pdf_for_run(run_id: str) -> str:
+    """
+    Ensures that mission_report.pdf exists for run_id.
+    If missing (e.g. from an older run), regenerates it dynamically on-the-fly from results.json.
+    """
+    export_dir = os.path.join("data/processed", run_id)
+    pdf_path = os.path.join(export_dir, "mission_report.pdf")
+    if os.path.exists(pdf_path):
+        return pdf_path
+
+    results_json_path = os.path.join(export_dir, "results.json")
+    if not os.path.exists(results_json_path):
+        return None
+
+    try:
+        with open(results_json_path, "r", encoding="utf-8") as f:
+            res = json.load(f)
+
+        region_id = res.get("region_id")
+        region_info = get_region_by_id(region_id) if region_id else None
+
+        if res.get("mode") == "region" and region_id:
+            tmc_file_path = f"data/regions/{region_id}/tmc_tile.png"
+            ohrc_file_path = f"data/regions/{region_id}/ohrc_tile.png"
+        else:
+            tmc_file_path = "data/demo/synthetic_tmc.png"
+            ohrc_file_path = "data/demo/synthetic_ohrc.png"
+
+        hazard_png_path = os.path.join(export_dir, "hazard_map.png")
+        nav_astar = res.get("navigation_astar", {})
+
+        generate_scientific_pdf_report(
+            run_id,
+            {"resolution_m": 5.0},
+            res.get("sr_model", "lunarsr"),
+            res.get("sr_metrics", {}),
+            res.get("hazard_stats", {}),
+            res.get("best_candidate", {}),
+            nav_astar.get("metrics", {}),
+            res.get("why_selected", []),
+            pdf_path,
+            region_info=region_info,
+            tmc_path=tmc_file_path,
+            ohrc_path=ohrc_file_path,
+            hazard_path=hazard_png_path
+        )
+        return pdf_path
+    except Exception as e:
+        print(f"Error generating PDF on-the-fly for {run_id}: {e}")
+        return None
+
+@app.get("/api/pdf/{run_id}")
+@app.get("/api/reports/{run_id}/download.pdf")
+def download_run_pdf(run_id: str):
+    """
+    Serves the standalone PDF scientific mission report for any run.
+    Dynamically generates the PDF if missing.
+    """
+    filepath = generate_pdf_for_run(run_id)
+    if not filepath or not os.path.exists(filepath):
+        raise HTTPException(status_code=404, detail=f"Mission PDF report could not be generated for run '{run_id}'")
+    return FileResponse(filepath, media_type="application/pdf", filename=f"Nexora_Mission_Report_{run_id}.pdf")
+
 @app.get("/api/results/{run_id}/report.html")
+@app.get("/api/results/{run_id}/mission_report.html")
 def get_report_html(run_id: str):
     """
     Serves the exported HTML report.
@@ -371,3 +437,18 @@ def get_report_html(run_id: str):
     if not os.path.exists(filepath):
         raise HTTPException(status_code=404, detail="Mission report not found")
     return FileResponse(filepath)
+
+@app.get("/api/results/{run_id}/report.pdf")
+@app.get("/api/results/{run_id}/mission_report.pdf")
+def get_report_pdf(run_id: str):
+    """
+    Serves the exported standalone binary PDF scientific mission report.
+    Dynamically generates if missing.
+    """
+    filepath = generate_pdf_for_run(run_id)
+    if not filepath or not os.path.exists(filepath):
+        raise HTTPException(status_code=404, detail="Mission PDF report not found for this run")
+    return FileResponse(filepath, media_type="application/pdf", filename=f"Nexora_Mission_Report_{run_id}.pdf")
+
+# Static fallback mount for processed results files (hazard_map.png, nav_route.geojson, etc.)
+app.mount("/api/results", StaticFiles(directory="data/processed"), name="results")
