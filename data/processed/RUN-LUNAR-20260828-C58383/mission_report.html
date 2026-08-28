@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>LunarSafe AI - Mission Analysis Report</title>
+    <style>
+        body {
+            font-family: 'Outfit', -apple-system, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            border-bottom: 3px solid #06b6d4;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #0b0f19;
+            margin: 0;
+            font-size: 28px;
+        }
+        .run-id {
+            color: #06b6d4;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .section {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            font-size: 18px;
+            color: #111827;
+            border-left: 4px solid #06b6d4;
+            padding-left: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .metric-label {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+        .metric-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge-observed { background: #e0f2fe; color: #0369a1; }
+        .badge-estimated { background: #fef3c7; color: #b45309; }
+        .badge-derived { background: #dcfce7; color: #15803d; }
+        .disclaimer {
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            border-radius: 6px;
+            padding: 15px;
+            font-size: 13px;
+            color: #b45309;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LunarSafe AI — Scientific Mission Report</h1>
+        <div class="run-id">RUN ID: RUN-LUNAR-20260828-C58383</div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">1. Dataset Summary & Provenance</div>
+        <div class="grid">
+            <div>
+                <div class="metric-label">Input Imagery</div>
+                <div class="metric-value">synthetic_tmc.png <span class="badge badge-observed">OBSERVED</span></div>
+            </div>
+            <div>
+                <div class="metric-label">Spatial Resolution</div>
+                <div class="metric-value">5.0 meters</div>
+            </div>
+            <div>
+                <div class="metric-label">Elevation Model</div>
+                <div class="metric-value">Digital Elevation Model (DEM) 
+                    <span class="badge badge-derived">DERIVED</span>
+                </div>
+            </div>
+            <div>
+                <div class="metric-label">Target Grid spacing</div>
+                <div class="metric-value">1.0 meter <span class="badge badge-estimated">ESTIMATED</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">2. Super-Resolution Reconstruction</div>
+        <div class="grid">
+            <div>
+                <div class="metric-label">upscaling Algorithm</div>
+                <div class="metric-value" style="text-transform: uppercase;">edsr</div>
+            </div>
+            <div>
+                <div class="metric-label">Inference Status</div>
+                <div class="metric-value">Completed (<span class="badge badge-estimated">ESTIMATED</span>)</div>
+            </div>
+            <div>
+                <div class="metric-label">SSIM (Structural Similarity)</div>
+                <div class="metric-value">0.3383755087852478</div>
+            </div>
+            <div>
+                <div class="metric-label">PSNR (Peak Signal-to-Noise Ratio)</div>
+                <div class="metric-value">22.807475722178296 dB</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">3. Selected Landing Zone Diagnostic</div>
+        
+        <div class="grid" style="margin-bottom: 20px;">
+            <div>
+                <div class="metric-label">Candidate Identifier</div>
+                <div class="metric-value" style="color: #06b6d4; font-family: monospace;">ZONE-01</div>
+            </div>
+            <div>
+                <div class="metric-label">Landing Suitability Score</div>
+                <div class="metric-value">97.8 / 100</div>
+            </div>
+            <div>
+                <div class="metric-label">Coordinates (Grid cell X, Y)</div>
+                <div class="metric-value">[375, 285]</div>
+            </div>
+            <div>
+                <div class="metric-label">Decision State</div>
+                <div class="metric-value" style="color: #10b981; font-weight: bold;">SAFE</div>
+            </div>
+        </div>
+        
+        <div style="background: #f3f4f6; border-radius: 6px; padding: 15px;">
+            <div style="font-weight: 600; font-size: 14px; margin-bottom: 10px;">Why Selected? (Explainable AI Panel)</div>
+            <ul style="padding-left: 20px; margin: 0; font-size: 13px;">
+                <li style='margin-bottom: 6px; color: #10b981;'>✓ Mean slope (0.0°) and Max slope (0.0°) are within limits (< 10.0°)</li><li style='margin-bottom: 6px; color: #10b981;'>✓ Terrain roughness (0.00) is smooth</li><li style='margin-bottom: 6px; color: #10b981;'>✓ Shadow coverage is 0.0% (full illumination)</li><li style='margin-bottom: 6px; color: #10b981;'>✓ Safe buffer clearance around detected craters maintained</li><li style='margin-bottom: 6px; color: #10b981;'>✓ Safe buffer clearance around detected boulder candidates maintained</li><li style='margin-bottom: 6px; color: #10b981;'>✓ Low landing uncertainty (0.14)</li><li style='margin-bottom: 6px; color: #10b981;'>✓ High landing suitability score: 97.8/100</li>
+            </ul>
+        </div>
+        
+    </div>
+
+    <div class="section">
+        <div class="section-title">4. Risk-Aware Navigation Path</div>
+        
+        <div class="grid">
+            <div>
+                <div class="metric-label">Calculated Route Distance</div>
+                <div class="metric-value">462.3 meters</div>
+            </div>
+            <div>
+                <div class="metric-label">Maximum Hazard Encountered</div>
+                <div class="metric-value" style="color: #f97316;">1.00</div>
+            </div>
+            <div>
+                <div class="metric-label">Average Hazard along route</div>
+                <div class="metric-value">0.12</div>
+            </div>
+            <div>
+                <div class="metric-label">Computation Time</div>
+                <div class="metric-value">92460.1 ms</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="disclaimer">
+        <strong>SCIENTIFIC LIMITATION NOTICE:</strong> Super-resolved imagery is an estimated higher-resolution representation
+        derived from lower-resolution source imagery. It must not be interpreted as direct physical observation.
+        Slope, physical terrain roughness, local relief and elevation-dependent hazards require valid elevation data (DEM)
+        or a separately validated terrain reconstruction method.
+    </div>
+</body>
+</html>

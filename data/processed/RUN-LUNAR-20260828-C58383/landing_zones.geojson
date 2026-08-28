@@ -1,0 +1,195 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          375.0,
+          285.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-01",
+        "suitability": 97.84467911006043,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          395.0,
+          295.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-02",
+        "suitability": 97.84018141929523,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          395.0,
+          320.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-03",
+        "suitability": 97.83979879328389,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          385.0,
+          270.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-04",
+        "suitability": 97.83649094019712,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          360.0,
+          300.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-05",
+        "suitability": 97.8357689588348,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          395.0,
+          275.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-06",
+        "suitability": 97.8349127576798,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          360.0,
+          285.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-07",
+        "suitability": 97.83483897383483,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          405.0,
+          305.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-08",
+        "suitability": 97.83057776555832,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          370.0,
+          310.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-09",
+        "suitability": 97.83017308788091,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          375.0,
+          320.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-10",
+        "suitability": 97.8293955956203,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    }
+  ]
+}

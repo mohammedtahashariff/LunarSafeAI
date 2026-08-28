@@ -1,0 +1,10 @@
+{
+  "sensor": "SYNTHETIC_TMC_5M",
+  "resolution_m": 5.0,
+  "width": 100,
+  "height": 100,
+  "crs": "LOCAL_LUNAR_GRID",
+  "origin_x": 0.0,
+  "origin_y": 0.0,
+  "data_type": "SIMULATED"
+}

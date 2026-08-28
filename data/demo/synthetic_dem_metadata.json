@@ -1,0 +1,94 @@
+{
+  "sensor": "SYNTHETIC_LUNAR_DEM",
+  "resolution_m": 1.0,
+  "width": 500,
+  "height": 500,
+  "min_elevation_m": 0.0,
+  "max_elevation_m": 50.0,
+  "crs": "LOCAL_LUNAR_GRID",
+  "origin_x": 0.0,
+  "origin_y": 0.0,
+  "data_type": "SIMULATED",
+  "craters": [
+    {
+      "x": 150.0,
+      "y": 150.0,
+      "radius_m": 35.0,
+      "depth_m": 10.0
+    },
+    {
+      "x": 350.0,
+      "y": 120.0,
+      "radius_m": 25.0,
+      "depth_m": 7.0
+    },
+    {
+      "x": 220.0,
+      "y": 380.0,
+      "radius_m": 45.0,
+      "depth_m": 14.0
+    }
+  ],
+  "boulders": [
+    {
+      "x": 80.0,
+      "y": 80.0,
+      "radius_m": 3.0,
+      "height_m": 2.5
+    },
+    {
+      "x": 90.0,
+      "y": 75.0,
+      "radius_m": 2.0,
+      "height_m": 1.8
+    },
+    {
+      "x": 260.0,
+      "y": 160.0,
+      "radius_m": 4.0,
+      "height_m": 3.0
+    },
+    {
+      "x": 120.0,
+      "y": 280.0,
+      "radius_m": 3.0,
+      "height_m": 2.2
+    },
+    {
+      "x": 310.0,
+      "y": 340.0,
+      "radius_m": 5.0,
+      "height_m": 4.0
+    },
+    {
+      "x": 420.0,
+      "y": 400.0,
+      "radius_m": 2.5,
+      "height_m": 2.0
+    },
+    {
+      "x": 180.0,
+      "y": 220.0,
+      "radius_m": 3.5,
+      "height_m": 2.8
+    },
+    {
+      "x": 450.0,
+      "y": 100.0,
+      "radius_m": 3.0,
+      "height_m": 2.4
+    },
+    {
+      "x": 50.0,
+      "y": 320.0,
+      "radius_m": 4.0,
+      "height_m": 3.2
+    },
+    {
+      "x": 380.0,
+      "y": 220.0,
+      "radius_m": 2.0,
+      "height_m": 1.5
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "sensor": "SYNTHETIC_OHRC_25CM",
+  "resolution_m": 0.25,
+  "width": 2000,
+  "height": 2000,
+  "crs": "LOCAL_LUNAR_GRID",
+  "origin_x": 0.0,
+  "origin_y": 0.0,
+  "data_type": "SIMULATED"
+}

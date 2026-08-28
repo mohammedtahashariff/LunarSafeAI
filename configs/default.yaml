@@ -1,0 +1,28 @@
+hazards:
+  boulder_weight: 0.15
+  crater_weight: 0.2
+  elevation_weight: 0.1
+  roughness_weight: 0.15
+  shadow_weight: 0.1
+  slope_weight: 0.3
+landing:
+  footprint_size_m: 5
+  max_hazard: 1.0
+  max_roughness: 1.0
+  max_shadow_percent: 100.0
+  max_slope_deg: 45.0
+  safety_margin_m: 0
+navigation:
+  algorithm: astar
+  emergency_abort_threshold: 1.0
+  extreme_blocked: false
+  hazard_penalty: 5.0
+  roughness_penalty: 2.0
+  shadow_penalty: 2.0
+  slope_penalty: 3.0
+  uncertainty_penalty: 5.0
+  unknown_blocked: false
+resolution:
+  ohrc: 0.25
+  target_grid: 1.0
+  tmc: 5.0

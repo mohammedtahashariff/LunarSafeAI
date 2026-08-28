@@ -1,0 +1,195 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          405.0,
+          305.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-01",
+        "suitability": 98.49215337634087,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          370.0,
+          285.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-02",
+        "suitability": 98.49101586214134,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          370.0,
+          325.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-03",
+        "suitability": 98.47832494244284,
+        "mean_slope": 0.0,
+        "max_slope": 0.0,
+        "mean_hazard": 0.0,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.0,
+          385.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-04",
+        "suitability": 96.19571149136338,
+        "mean_slope": 0.5833507776260376,
+        "max_slope": 1.563680648803711,
+        "mean_hazard": 0.011301105841994286,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          180.0,
+          25.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-05",
+        "suitability": 95.62088987558168,
+        "mean_slope": 0.7220051884651184,
+        "max_slope": 1.3202379941940308,
+        "mean_hazard": 0.01421841699630022,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.0,
+          105.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-06",
+        "suitability": 95.42850735813988,
+        "mean_slope": 0.7773098945617676,
+        "max_slope": 1.377461314201355,
+        "mean_hazard": 0.015130287036299706,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          110.0,
+          240.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-07",
+        "suitability": 95.22035133625779,
+        "mean_slope": 0.8195709586143494,
+        "max_slope": 1.9645787477493286,
+        "mean_hazard": 0.01624399982392788,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          255.0,
+          95.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-08",
+        "suitability": 95.15623814034826,
+        "mean_slope": 0.8413643836975098,
+        "max_slope": 1.7769008874893188,
+        "mean_hazard": 0.0164786409586668,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          40.0,
+          175.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-09",
+        "suitability": 94.9588951079213,
+        "mean_slope": 0.8935791850090027,
+        "max_slope": 1.7073560953140259,
+        "mean_hazard": 0.017425138503313065,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.0,
+          40.0
+        ]
+      },
+      "properties": {
+        "id": "ZONE-10",
+        "suitability": 94.89728934591523,
+        "mean_slope": 0.9018449783325195,
+        "max_slope": 1.9325809478759766,
+        "mean_hazard": 0.01784219965338707,
+        "shadow_percent": 0.0,
+        "decision": "SAFE"
+      }
+    }
+  ]
+}
