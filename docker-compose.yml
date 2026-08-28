@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: lunarsafe_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/processed:/app/data/processed
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: lunarsafe_frontend
+    ports:
+      - "80:80"
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: always
