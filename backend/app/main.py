@@ -13,11 +13,15 @@ from backend.app.processing.hazards import generate_boulder_hazard_map, fuse_haz
 from backend.app.processing.lunar_regions import get_region_list, get_region_by_id, load_region_data, get_region_data_paths
 from backend.app.processing.tmc_ohrc_intersection import generate_region_coverage
 
-app = FastAPI(
-    title="LunarSafe AI Backend",
-    description="FastAPI processing service for super-resolution hazard mapping & safe landing path navigation.",
-    version="1.0.0"
-)
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def root():
+    return {"status": "LunarSafe AI backend is running", "docs": "/docs"}
+
+# ... rest of your existing routes
 
 # Configure CORS
 app.add_middleware(
@@ -58,6 +62,17 @@ os.makedirs("data/regions", exist_ok=True)
 # Mount static directories
 app.mount("/api/demo_data", StaticFiles(directory="data/demo"), name="demo")
 app.mount("/api/region_data", StaticFiles(directory="data/regions"), name="regions")
+
+@app.get("/")
+def root():
+    return {
+        "status": "online",
+        "service": "LunarSafe AI Backend API",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "health": "/api/health",
+        "frontend": "https://lunarsafe-ai.vercel.app"
+    }
 
 @app.get("/api/health")
 def health_check():
