@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://lunarsafeai.onrender.com/api/:path*"
+      "destination": "https://lunarsafeai-wa7k.onrender.com/api/:path*"
     }
   ]
 }
