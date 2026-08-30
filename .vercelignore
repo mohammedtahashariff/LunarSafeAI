@@ -1,0 +1,11 @@
+backend/
+data/
+*.pyc
+__pycache__/
+requirements.txt
+runtime.txt
+Dockerfile.*
+docker-compose.yml
+test_backend.py
+test_output.pdf
+tests/
